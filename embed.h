@@ -1,10 +1,10 @@
 #ifndef EMBED_H_INCLUDED
 #define EMBED_H_INCLUDED
 
-const int orderThreshold = 4;
 const int starting_depth = 0;
 
-const int16_t comp_th = 30000;
+const int comp_th_16bit = 30000;
+const int comp_th_24bit = 8388000;
 const float comp_rat_inv = 0.1;
 const float int16_max = 32768.0;
 
@@ -15,7 +15,7 @@ const bool kfiltering = true;
 const bool fixEmbParams = false;
 const int c_d1 = 5;
 const int c_d2 = 3;
-const int audibleOffset = 42; // in dB
+const int levelOffset = 42; // in dB
 
 const unsigned write_mask[24] = {0xFFFFFFFF, 0xFFFFFFFE, 0xFFFFFFFC, 0xFFFFFFF8,
                                  0xFFFFFFF0, 0xFFFFFFE0, 0xFFFFFFC0, 0xFFFFFF80,
@@ -36,20 +36,6 @@ struct {
 } embTable_24bit;
 
 
-const float pre_a1 = -1.69065929318241;
-const float pre_a2 = 0.73248077421585;
-const float pre_b0 = 1.53512485958697;
-const float pre_b1 = -2.69169618940638;
-const float pre_b2 = 1.19839281085285;
-
-const float rlb_a1 = -1.99004745483398;
-const float rlb_a2 = 0.99007225036621;
-const float rlb_b0 = 1.0;
-const float rlb_b1 = -2.0;
-const float rlb_b2 = 1.0;
-
-//const int32_t write_mask1 = ~(((1 << detail1_scope) - 1) << (starting_depth)); //mask with length of detail1_scope bits
-//const int32_t write_mask2 = ~(((1 << detail2_scope) - 1) << (starting_depth)); //mask with length of detail2_scope bits
 const int32_t header_mask1 = ~(((1 << 6) - 1) << (starting_depth)); //mask with length of detail1_scope bits
 const int32_t header_mask2 = ~(((1 << 4) - 1) << (starting_depth)); //mask with length of detail2_scope bits
 
