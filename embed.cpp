@@ -99,27 +99,27 @@ void setEmbeddingParams(int *samples, int NumChannels, int cnt, int sampleRate, 
         *d2 = c_d2;
     } else {
         if (kfiltering) {
-            {   // high-shelf prefilter
-                Dsp::Filter* f = new Dsp::FilterDesign
-                  <Dsp::ChebyshevII::Design::HighShelf <5>, 1>;
-                Dsp::Params params;
-                params[0] = sampleRate; // sample rate
-                params[1] = 5; // order
-                params[2] = 1000; // corner frequency
-                params[3] = 4; // shelf gain
-                params[4] = 0.1; // passband ripple
-                f->setParams (params);
-                f->process (numSamples, audioData);
-            }
-            {   //high-pass RLB filter
-                Dsp::SmoothedFilterDesign <Dsp::RBJ::Design::HighPass, 1> f (cnt);
-                Dsp::Params params;
-                params[0] = sampleRate; // sample rate
-                params[1] = 100; // cutoff frequency
-                params[2] = 0.25; // Q
-                f.setParams (params);
-                f.process (numSamples, audioData);
-            }
+           {   // high-shelf prefilter
+               Dsp::Filter* f = new Dsp::FilterDesign
+                 <Dsp::ChebyshevII::Design::HighShelf <5>, 1>;
+               Dsp::Params params;
+               params[0] = sampleRate; // sample rate
+               params[1] = 5; // order
+               params[2] = 1000; // corner frequency
+               params[3] = 4; // shelf gain
+               params[4] = 0.1; // passband ripple
+               f->setParams (params);
+               f->process (numSamples, audioData);
+           }
+           {   //high-pass RLB filter
+               Dsp::SmoothedFilterDesign <Dsp::RBJ::Design::HighPass, 1> f (cnt);
+               Dsp::Params params;
+               params[0] = sampleRate; // sample rate
+               params[1] = 100; // cutoff frequency
+               params[2] = 0.25; // Q
+               f.setParams (params);
+               f.process (numSamples, audioData);
+           }
             level = estimateLevel(audioData, cnt, bitsPerSample);
         } else {
             level = estimateLevel(audioData, cnt, bitsPerSample);
@@ -232,6 +232,7 @@ unsigned get_bits_inc(unsigned char *buffer, unsigned *offset, int count) {
 
     *offset += count;
 
+//    return (unsigned) ((1 << count) - 1); //for testing purposes
 	return result << starting_depth; //final placement
 }
 
@@ -266,7 +267,7 @@ unsigned LWT_LSBinsertion(int32_t* samples, unsigned NumSamples, int NumChannels
     int32_t write_mask2; //mask with length of detail2_scope bits
     bool isWindowBegin;
 
-    /** WRITE SIZE OF THE SECRET DATA INTO FIRST 8 SAMPLES **/
+    /** WRITE SIZE OF THE SECRET DATA INTO THE FIRST 8 SAMPLES **/
     //concealed message size - first 8 samples (4B integer). Fixed size.
     forward_LWT(samples, 0, NumChannels);
     unsigned char* lengthBuffer = reinterpret_cast<unsigned char *>(&buffer_length);
@@ -321,6 +322,7 @@ unsigned LWT_LSBinsertion(int32_t* samples, unsigned NumSamples, int NumChannels
         isWindowBegin = ((i - 8) % windowSize) == 0;
         if (isWindowBegin) {
             setEmbeddingParams(samples + i, NumChannels, NumSamplesAbsolute - i, SampleRate, BitsPerSample, i, &detail1_scope, &detail2_scope);
+            printf("%.2f %i %i\n", 1.0*i/(SampleRate*NumChannels), detail1_scope, detail2_scope);
         }
         memcpy(temp_samples, samples + i, 8 * sizeof(int32_t));
         temp_mB_cursor = mB_cursor;

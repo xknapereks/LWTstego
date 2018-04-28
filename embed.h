@@ -8,8 +8,8 @@ const int comp_th_24bit = 8388000;
 const float comp_rat_inv = 0.1;
 const float int16_max = 32768.0;
 
-const int windowSize = 4096;
-//const int windowSize = 28672;
+//const int windowSize = 4096;
+const int windowSize = 28672;
 
 const bool kfiltering = true;
 const bool fixEmbParams = false;
